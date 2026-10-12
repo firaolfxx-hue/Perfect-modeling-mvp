@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Perfect Modeling School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0c0c0c;--paper:#f2eee6;--accent:#ff4d2e;--mute:#8d8a83;--line:rgba(127,127,127,.28);
+--serif:'Instrument Serif',Georgia,serif;--sans:'Inter Tight',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:auto;-webkit-text-size-adjust:100%}
+body{background:var(--ink);color:var(--paper);font-family:var(--sans);line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+::selection{background:var(--accent);color:#000}
+.wrap{width:min(1320px,92%);margin:auto}
+.lt{background:var(--paper);color:var(--ink)}
+.dk{background:var(--ink);color:var(--paper)}
+.ac{background:var(--accent);color:var(--ink)}
+.sec{padding:clamp(4.5rem,11vw,10rem) 0}
+.kick{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:.8rem}
+.kick::before{content:"";width:28px;height:1px;background:currentColor}
+.serif{font-family:var(--serif);font-weight:400;font-style:italic}
+.big{font-size:clamp(2.6rem,8vw,8rem);line-height:.92;letter-spacing:-.035em;font-weight:700;text-transform:uppercase}
+.big .serif{text-transform:none;letter-spacing:-.02em}
+.h2{font-size:clamp(2.1rem,5.6vw,5.4rem);line-height:.98;letter-spacing:-.03em;font-weight:600}
+.h2 .serif{font-weight:400}
+.mut{color:var(--mute)}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:.7rem;min-height:48px;padding:1rem 1.9rem;border-radius:99px;border:1px solid currentColor;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;transition:.4s;position:relative;overflow:hidden}
+.pill:hover{background:var(--accent);border-color:var(--accent);color:#000}
+.pill.fill{background:var(--accent);border-color:var(--accent);color:#000}
+.pill.fill:hover{background:var(--paper);border-color:var(--paper)}
+.pill.inv{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.pill.inv:hover{background:var(--paper);color:var(--ink)}
+.pill.wa{background:#25d366;border-color:#25d366;color:#000}
+.pill.wa:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.pill svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.frame{overflow:hidden;position:relative;background:#1a1a1a}
+.frame img{transition:transform 1.2s cubic-bezier(.2,.7,.2,1),opacity .9s}
+.frame:hover img{transform:scale(1.06)}
+.frame img[data-par]{height:118%;position:absolute;top:-9%;left:0;transition:opacity .9s}
+.frame:hover img[data-par]{transform:none}
+img.fd{opacity:0}img.fd.ld{opacity:1}
+.rv{opacity:0;transform:translateY(46px);transition:opacity 1s,transform 1.1s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+#sp{position:fixed;top:0;left:0;height:3px;width:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;z-index:7600}
+
+/* cursor (desktop only) */
+#cur{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;mix-blend-mode:difference;transition:width .3s,height .3s,margin .3s;display:none;place-items:center;font-size:0}
+#cur.big{width:84px;height:84px;margin:-42px 0 0 -42px;background:var(--accent);mix-blend-mode:normal;color:#000;font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+@media(hover:hover) and (pointer:fine){#cur{display:grid}body,a,button,summary{cursor:none}}
+
+/* loader + wipe */
+#loader{position:fixed;inset:0;background:var(--ink);z-index:9000;display:flex;flex-direction:column;justify-content:space-between;padding:2rem;transition:transform 1s cubic-bezier(.8,0,.2,1)}
+#loader.done{transform:translateY(-100%)}
+#loader .cnt{font-size:clamp(6rem,24vw,22rem);font-weight:800;letter-spacing:-.06em;line-height:.8;align-self:flex-end}
+#loader .top{display:flex;justify-content:space-between;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;gap:1rem}
+#wipe{position:fixed;inset:0;background:var(--accent);z-index:8000;transform:translateY(100%);pointer-events:none;display:grid;place-items:center;font-family:var(--serif);font-style:italic;font-size:clamp(2rem,6vw,5rem);color:#000;text-align:center;padding:1rem}
+
+/* header */
+header{position:fixed;top:0;left:0;right:0;z-index:7000;padding:1.2rem 0;mix-blend-mode:difference;color:#fff}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:.8rem}
+.logo{font-weight:800;letter-spacing:-.02em;font-size:1.15rem;text-transform:uppercase;line-height:1;white-space:nowrap}
+.logo i{font-family:var(--serif);font-weight:400;text-transform:none;font-size:1.25rem}
+.nav .r{display:flex;gap:.6rem;align-items:center}
+.here{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:.5rem;padding-right:.4rem}
+.here::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff}
+.lang{display:flex;border:1px solid #fff;border-radius:99px;padding:3px}
+.lang button{padding:.42rem .8rem;border-radius:99px;font-size:.72rem;letter-spacing:.08em;font-weight:700;line-height:1;min-height:30px;transition:.3s}
+.lang button.on{background:#fff;color:#000}
+.menubtn{display:flex;align-items:center;gap:.7rem;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;padding:.8rem 1.3rem;border:1px solid #fff;border-radius:99px;min-height:44px}
+.menubtn b{display:block;width:18px;height:7px;border-block:1.5px solid #fff}
+#menu{position:fixed;inset:0;z-index:6500;background:var(--ink);color:var(--paper);clip-path:inset(0 0 100% 0);transition:clip-path .9s cubic-bezier(.8,0,.2,1);display:flex;align-items:center;overflow-y:auto;padding:6rem 0 2rem}
+#menu.open{clip-path:inset(0)}
+#menu .wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:3rem;align-items:center;margin-block:auto}
+#menu ul{list-style:none}
+#menu li a{display:flex;align-items:center;gap:1.2rem;font-size:clamp(2rem,min(7.4vw,9.5vh),6.6rem);font-weight:700;letter-spacing:-.04em;text-transform:uppercase;line-height:1.04;transition:.4s;opacity:.9}
+#menu li a small{font-size:.8rem;letter-spacing:.1em;color:var(--accent);font-weight:500;align-self:flex-start;margin-top:.9em}
+#menu li a:hover{color:var(--accent);padding-left:1.2rem}
+#menu li a.cur{color:var(--accent);opacity:1}
+#menu .pv{aspect-ratio:3/4;max-height:70vh;margin-left:auto;width:min(420px,100%);border-radius:999px 999px 0 0}
+#menu .pv img{position:absolute;inset:0;opacity:0;transition:opacity .5s}
+#menu .pv img.on{opacity:1}
+.mfoot{margin-top:2rem;display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.mfoot span{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mute)}
+
+/* social icons (brand colors) */
+.soc{display:flex;gap:.7rem;flex-wrap:wrap}
+.soc a{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:#fff;transition:transform .35s,box-shadow .35s,filter .35s;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.soc a:hover{transform:translateY(-4px) scale(1.08);filter:brightness(1.12);box-shadow:0 10px 22px rgba(0,0,0,.5)}
+.soc a.tt{border:1px solid rgba(255,255,255,.25)}
+.soc a.tt svg{filter:drop-shadow(-1.5px -1px 0 #25f4ee) drop-shadow(1.5px 1px 0 #fe2c55)}
+.soc svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* hero */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:grid;place-items:center;overflow:hidden;padding:7rem 0 6rem}
+.arch{width:min(400px,64vw);aspect-ratio:3/4.3;border-radius:999px 999px 0 0;position:relative;z-index:1}
+.hero h1{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;pointer-events:none;mix-blend-mode:difference;color:#fff;padding:0 3vw}
+.hero h1 span{font-size:clamp(3.4rem,17.5vw,17rem);font-weight:800;letter-spacing:-.06em;line-height:.8;text-transform:uppercase}
+.hero h1 span:nth-child(3){align-self:flex-end}
+.hero h1 em{font-family:var(--serif);font-weight:400;font-size:clamp(1.5rem,5vw,4.6rem);letter-spacing:-.01em;align-self:center;margin:.6rem 0;text-transform:none}
+.hero .meta{position:absolute;left:0;right:0;bottom:1.8rem;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;margin:auto}
+.hero .meta p{max-width:260px;line-height:1.5}
+.badge{width:140px;height:140px;position:relative;display:grid;place-items:center}
+.badge svg{position:absolute;inset:0;animation:spin 18s linear infinite}
+.badge b{font-size:1.8rem;color:var(--accent)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.glow{position:absolute;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(255,77,46,.35),transparent 65%);filter:blur(40px);top:10%;left:20%;animation:float 9s ease-in-out infinite alternate}
+@keyframes float{to{transform:translate(8vw,6vh) scale(1.1)}}
+
+.marq{overflow:hidden;padding:1.6rem 0;border-block:1px solid var(--line)}
+.marq div{display:flex;width:max-content;animation:mq 30s linear infinite;gap:2.5rem;font-family:var(--serif);font-style:italic;font-size:clamp(2rem,5vw,4.2rem);white-space:nowrap}
+.marq span::after{content:"✺";font-style:normal;color:var(--accent);margin-left:2.5rem;font-size:.7em}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+.scrub{font-size:clamp(1.7rem,4.4vw,4rem);line-height:1.12;letter-spacing:-.03em;font-weight:600;max-width:1100px}
+.scrub span{opacity:.16;transition:opacity .4s}.scrub span.on{opacity:1}
+.scrub .serif{font-weight:400}
+
+.stack{margin-top:4rem}
+.sc{position:sticky;top:calc(88px + var(--i)*22px);border-radius:28px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;min-height:min(560px,76vh);margin-bottom:2rem;box-shadow:0 -20px 40px rgba(0,0,0,.12)}
+.sc .tx{padding:clamp(1.6rem,4vw,3.4rem);display:flex;flex-direction:column;justify-content:space-between;gap:2rem}
+.sc .n{font-family:var(--serif);font-style:italic;font-size:1.4rem}
+.sc h3{font-size:clamp(2rem,4.4vw,4.2rem);letter-spacing:-.04em;line-height:.95;font-weight:700;text-transform:uppercase}
+.sc p{max-width:420px;opacity:.8}
+.sc .frame{min-height:300px}
+.tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.2rem}
+.tags i{font-style:normal;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;border:1px solid currentColor;border-radius:99px;padding:.4rem .9rem}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.stats div{padding:2.4rem 1rem 0 0}
+.stats strong{display:block;font-size:clamp(2.6rem,7vw,6.6rem);letter-spacing:-.05em;line-height:1;font-weight:700}
+.stats span{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+
+.trio{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:1.2rem;align-items:end}
+.trio .frame{border-radius:22px;display:block}
+.trio .a{aspect-ratio:3/4}.trio .b{aspect-ratio:3/4.5}.trio .c{aspect-ratio:3/3.6}
+
+.strip{display:flex;gap:1.2rem;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:1.4rem;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.strip .it{flex:0 0 clamp(210px,26vw,340px);scroll-snap-align:start}
+.strip .frame{aspect-ratio:3/4.2;border-radius:200px 200px 18px 18px}
+.strip h4{margin-top:1rem;font-size:1.2rem;font-weight:600;letter-spacing:-.02em}
+.strip small{color:var(--mute);letter-spacing:.14em;text-transform:uppercase;font-size:.68rem}
+
+.cta{text-align:center;padding:clamp(5rem,12vw,11rem) 0}
+.cta .big{font-size:clamp(2.8rem,12vw,12rem);margin:1.2rem 0 2.4rem}
+
+.phead{padding:20vh 0 6vh}
+.phead .big{margin-top:1.4rem;font-size:clamp(3rem,12vw,12rem)}
+.phead p{max-width:520px;margin-top:1.6rem;color:var(--mute);font-size:1.1rem}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,6rem);align-items:center}
+.split .frame{aspect-ratio:4/5;border-radius:24px}
+.lead{font-size:1.15rem;opacity:.8;max-width:520px;margin-top:1.4rem}
+.vals{display:grid;grid-template-columns:repeat(3,1fr);margin-top:3rem;border-top:1px solid var(--line)}
+.vals div{padding:2rem 2rem 2rem 0;border-right:1px solid var(--line)}
+.vals div:last-child{border:0}.vals div+div{padding-left:2rem}
+.vals b{font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.6rem;color:var(--accent)}
+.vals h3{font-size:1.7rem;letter-spacing:-.03em;margin:.6rem 0}
+.team{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-top:3rem}
+.team .frame{aspect-ratio:3/4;border-radius:18px}
+.team h4{margin-top:.9rem;font-size:1.1rem}.team small{color:var(--mute)}
+.tline{margin-top:3rem}
+.tline div{display:grid;grid-template-columns:140px 1fr 1.4fr;gap:2rem;padding:1.8rem 0;border-top:1px solid var(--line);align-items:baseline}
+.tline b{font-family:var(--serif);font-style:italic;font-size:2rem;color:var(--accent);font-weight:400}
+.tline h4{font-size:1.4rem;letter-spacing:-.02em}
+
+details.prow{border-top:1px solid var(--line)}
+details.prow:last-of-type{border-bottom:1px solid var(--line)}
+details.prow summary{list-style:none;display:grid;grid-template-columns:80px 1fr auto 60px;gap:1.5rem;align-items:center;padding:2.2rem 0;transition:.4s}
+details.prow summary::-webkit-details-marker{display:none}
+details.prow summary:hover{padding-left:1.2rem;color:var(--accent)}
+details.prow summary .no{font-family:var(--serif);font-style:italic;font-size:1.4rem}
+details.prow summary h3{font-size:clamp(1.7rem,4.6vw,4.4rem);letter-spacing:-.04em;text-transform:uppercase;font-weight:700;line-height:1}
+details.prow summary .du{font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+details.prow summary .pl{width:44px;height:44px;border:1px solid currentColor;border-radius:50%;display:grid;place-items:center;font-size:1.4rem;transition:.4s}
+details[open].prow summary .pl{transform:rotate(45deg);background:var(--accent);color:#000;border-color:var(--accent)}
+.pbody{display:grid;grid-template-columns:80px 1fr 1fr;gap:1.5rem;padding:0 0 2.6rem}
+.pbody ul{list-style:none;columns:2;gap:2rem}
+.pbody li{padding:.55rem 0;border-bottom:1px solid var(--line);break-inside:avoid}
+.pbody li::before{content:"↳ ";color:var(--accent)}
+#peek{position:fixed;left:0;top:0;width:250px;height:330px;z-index:500;pointer-events:none;border-radius:140px 140px 14px 14px;overflow:hidden;opacity:0;transition:opacity .3s;margin:-165px 0 0 30px}
+#peek.on{opacity:1}
+
+/* gallery shared */
+.filters{display:flex;gap:.6rem;flex-wrap:wrap;margin:2.4rem 0}
+.filters button{flex:0 0 auto;border:1px solid var(--line);padding:.7rem 1.4rem;border-radius:99px;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;transition:.3s;min-height:44px}
+.filters button.on,.filters button:hover{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.lt .filters button.on,.lt .filters button:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.grid{columns:3;column-gap:1.2rem}
+.gi{break-inside:avoid;margin-bottom:1.2rem;position:relative;border-radius:20px;overflow:hidden}
+.gi .frame{border-radius:0}
+.gi .cap{position:absolute;left:0;right:0;bottom:0;padding:1.4rem;background:linear-gradient(transparent,rgba(0,0,0,.8));display:flex;justify-content:space-between;align-items:flex-end;transform:translateY(40%);opacity:0;transition:.5s;color:#fff;z-index:2}
+.gi:hover .cap{transform:none;opacity:1}
+.gi h4{font-size:1.2rem;letter-spacing:-.02em}.gi small{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+.gi.hide{display:none}
+.more{display:flex;justify-content:space-between;align-items:center;gap:2rem;flex-wrap:wrap}
+.more .h2{margin-top:1rem}
+#lb{position:fixed;inset:0;background:rgba(8,8,8,.96);z-index:9500;display:none;align-items:center;justify-content:center;gap:2rem;padding:2rem;touch-action:pan-y}
+#lb.open{display:flex}
+#lb .box{height:min(80vh,720px);aspect-ratio:3/4;border-radius:200px 200px 18px 18px;overflow:hidden}
+#lb .info{max-width:260px}
+#lb h3{font-size:2.6rem;letter-spacing:-.04em;line-height:1}
+#lb .x,#lb .nv{position:absolute;border:1px solid #555;border-radius:50%;width:54px;height:54px;font-size:1.3rem;z-index:3}
+#lb .x{top:1.5rem;right:1.5rem}#lb .pv{left:1.5rem;top:50%}#lb .nx{right:1.5rem;top:50%}
+#lb .nv:hover,#lb .x:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+
+/* portfolio */
+.pstats{margin-top:3rem}
+.proj{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(2rem,5vw,5rem);align-items:center;padding:clamp(3rem,7vw,6rem) 0;border-top:1px solid var(--line)}
+.proj:nth-child(even){grid-template-columns:1.2fr .8fr}.proj:nth-child(even) .pt{order:2}
+.pt .no{font-family:var(--serif);font-style:italic;font-size:1.5rem;color:var(--accent)}
+.pt h2{margin:.8rem 0 1.2rem}
+.pt p{color:var(--mute);max-width:430px}
+.pg{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:repeat(2,minmax(230px,1fr));gap:1rem;min-height:580px}
+.pg .gi{margin:0;border-radius:22px;min-height:230px}
+.pg .gi:first-child{grid-row:span 2}
+.pg .gi .frame{position:absolute;inset:0}
+.pg .gi .frame img{position:absolute;inset:0}
+.qs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:3rem}
+.q{border:1px solid var(--line);border-radius:22px;padding:2rem;display:flex;flex-direction:column;justify-content:space-between;gap:2.4rem;transition:.4s}
+.q:hover{background:var(--paper);color:var(--ink)}
+.q p{font-family:var(--serif);font-style:italic;font-size:1.65rem;line-height:1.2}
+.q small{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;opacity:.7}
+
+/* forms */
+.fgrid{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(2rem,6vw,6rem)}
+.fld{margin-bottom:1.8rem;position:relative}
+.fld label{display:block;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);margin-bottom:.4rem}
+.fld input,.fld select,.fld textarea{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);color:inherit;font:inherit;font-size:1.2rem;padding:.7rem 0;outline:none;transition:.3s;border-radius:0}
+.fld select option{color:#000}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--accent)}
+.fld.err input,.fld.err select,.fld.err textarea{border-color:#ff3b3b}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem}
+.prog{display:flex;gap:.5rem;margin-bottom:2.4rem}
+.prog i{flex:1;height:3px;background:var(--line);position:relative;overflow:hidden}
+.prog i::after{content:"";position:absolute;inset:0;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:.6s}
+.prog i.on::after{transform:none}
+.step{display:none}.step.on{display:block;animation:up .6s}
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.step h3{font-size:2rem;letter-spacing:-.03em;margin-bottom:1.6rem}
+.fbtn{display:flex;justify-content:space-between;margin-top:1rem;gap:1rem}
+.chips{display:flex;flex-wrap:wrap;gap:.6rem}
+.chips label{cursor:pointer}
+.chips input{display:none}
+.chips span{display:block;padding:.75rem 1.2rem;border:1px solid var(--line);border-radius:99px;font-size:.9rem;transition:.3s}
+.chips input:checked+span{background:var(--accent);color:#000;border-color:var(--accent)}
+.sum{border:1px solid var(--line);border-radius:18px;padding:1.4rem;margin-bottom:1.4rem;font-size:.95rem}
+.sum div{display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0;border-bottom:1px solid var(--line)}
+.sum div:last-child{border:0}
+.ok{display:none;text-align:center;padding:3rem 0}
+.ok h3{font-size:3rem;letter-spacing:-.04em}
+.steps2{list-style:none;counter-reset:s;margin-top:2rem}
+.steps2 li{counter-increment:s;display:flex;gap:1.4rem;padding:1.4rem 0;border-top:1px solid var(--line)}
+.steps2 li::before{content:counter(s,decimal-leading-zero);font-family:var(--serif);font-style:italic;font-size:1.8rem;color:var(--accent);min-width:50px}
+.info li{list-style:none;display:flex;gap:1.4rem;padding:1.3rem 0;border-top:1px solid var(--line)}
+.info b{min-width:90px;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);padding-top:.3rem}
+.map{height:380px;border-radius:24px;overflow:hidden;margin-top:3rem}
+.map iframe{width:100%;height:100%;border:0;filter:grayscale(1) contrast(1.1) invert(.92)}
+details.fq{border-top:1px solid var(--line);padding:1.5rem 0}
+details.fq:last-of-type{border-bottom:1px solid var(--line)}
+details.fq summary{cursor:pointer;list-style:none;font-size:clamp(1.15rem,2.4vw,1.4rem);font-weight:600;letter-spacing:-.02em;display:flex;justify-content:space-between;gap:1rem}
+details.fq summary::-webkit-details-marker{display:none}
+details.fq summary::after{content:"+";color:var(--accent);font-size:1.6rem;transition:.3s}
+details.fq[open] summary::after{transform:rotate(45deg)}
+details.fq p{margin-top:1rem;color:var(--mute);max-width:640px}
+
+footer{padding:5rem 0 calc(1.5rem + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.fgr{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.3fr;gap:2.5rem}
+footer h5{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem}
+footer li{list-style:none;margin-bottom:.6rem;color:var(--mute)}footer li a{display:inline-block;padding:.15rem 0}footer li a:hover{color:var(--paper)}
+.mega{font-size:clamp(3rem,17.5vw,19rem);font-weight:800;letter-spacing:-.07em;line-height:.8;text-transform:uppercase;margin-top:4rem;white-space:nowrap;overflow:hidden;color:#1d1d1d}
+.cp{display:flex;justify-content:space-between;color:var(--mute);font-size:.78rem;margin-top:2rem;flex-wrap:wrap;gap:1rem}
+
+.page{display:none}.page.active{display:block}
+
+/* ---------- Responsive ---------- */
+@media(min-width:1700px){html{font-size:17px}.wrap{width:min(1560px,86%)}}
+@media(max-width:1100px){
+ .team{grid-template-columns:1fr 1fr}
+ .here{display:none}
+ .qs{grid-template-columns:1fr 1fr}.qs .q:last-child{grid-column:1/-1}
+}
+@media(max-width:900px){
+ #menu .wrap{grid-template-columns:1fr}#menu .pv{display:none}
+ .sc,.split,.fgrid,.pbody,.proj,.proj:nth-child(even){grid-template-columns:1fr}
+ .sc{position:relative;top:0;min-height:0}.sc .frame{min-height:280px;order:-1}
+ .proj:nth-child(even) .pt{order:0}
+ .stats{grid-template-columns:1fr 1fr}.trio{grid-template-columns:1fr 1fr}.trio .b{grid-column:1/-1;order:-1}
+ .vals,.qs{grid-template-columns:1fr}.qs .q:last-child{grid-column:auto}
+ .vals div{border:0;border-bottom:1px solid var(--line);padding:1.6rem 0!important}
+ .grid{columns:2}.tline div{grid-template-columns:1fr;gap:.5rem}
+ details.prow summary{grid-template-columns:36px 1fr 44px;gap:1rem;padding:1.6rem 0}details.prow summary .du{display:none}
+ .fgr{grid-template-columns:1fr 1fr}.pbody ul{columns:1}.pbody div:first-child{display:none}
+ #lb{flex-direction:column;gap:1rem;padding:4.5rem 1rem 5.5rem}#lb .info{text-align:center}#lb .box{height:56vh;height:56svh}
+ #lb .nv{top:auto;bottom:1.2rem}#lb .pv{left:1.2rem}#lb .nx{right:1.2rem}
+ .badge{width:104px;height:104px}.hero .meta p{display:none}.hero .meta{justify-content:flex-end}
+ .menubtn span{display:none}.menubtn{padding:.8rem 1rem}.nav .pill{display:none}
+ .pg{min-height:0;grid-template-columns:1fr 1fr;grid-template-rows:260px 200px}.pg .gi:first-child{grid-row:auto;grid-column:1/-1}
+ .map{height:300px}.more .pill{width:100%}
+}
+@media(max-width:600px){
+ .wrap{width:90%}
+ .sec{padding:4rem 0}.phead{padding:16vh 0 4vh}.phead p{font-size:1rem}
+ header{padding:.9rem 0}.logo{font-size:1rem}.logo i{font-size:1.1rem}
+ .lang button{padding:.4rem .6rem;font-size:.68rem}
+ .grid{column-gap:.7rem}.gi{margin-bottom:.7rem;border-radius:14px}
+ .filters{flex-wrap:nowrap;overflow-x:auto;margin-inline:-5vw;padding-inline:5vw;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}
+ .r2{grid-template-columns:1fr;gap:0}
+ .stats div{padding:1.6rem .5rem 0 0}
+ .step h3{font-size:1.6rem}
+ .fbtn .pill{padding:.9rem 1.2rem}
+ .team{gap:.8rem}.trio{gap:.7rem}
+ .sc .tx{padding:1.5rem}
+ .fgr{grid-template-columns:1fr;gap:2rem}
+ .cp{flex-direction:column}
+ .hero .meta{bottom:1rem}
+ #loader{padding:1.2rem}
+}
+@media(max-width:380px){.logo i{display:none}.grid{columns:1}}
+@media(hover:none){
+ .gi .cap{transform:none;opacity:1;padding:.9rem}.gi h4{font-size:1rem}
+ .frame:hover img{transform:none}.gi:hover .cap{transform:none}
+}
+@media(prefers-reduced-motion:reduce){.marq div,.badge svg,.glow{animation:none}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div id="sp"></div>
+<div id="cur"></div>
+<div id="wipe">Perfect Modeling</div>
+<div id="loader"><div class="top"><span>Perfect Modeling School</span><span>Addis Ababa · Est. 2014</span></div><div class="cnt" id="cnt">0</div></div>
+
+<header><div class="wrap nav">
+  <a href="#home" class="logo">Perfect<i> modeling</i></a>
+  <div class="r">
+    <span class="here" id="here">Home</span>
+    <div class="lang" id="lang" role="group" aria-label="Language"><button type="button" data-l="en" class="on">EN</button><button type="button" data-l="am">አማርኛ</button></div>
+    <a href="#admissions" class="pill" style="padding:.75rem 1.3rem;color:#fff;min-height:44px">Apply</a>
+    <button class="menubtn" id="mbtn" aria-label="Menu"><span id="mtxt">Menu</span><b></b></button>
+  </div>
+</div></header>
+
+<nav id="menu"><div class="wrap">
+  <div>
+    <ul>
+      <li><a href="#home" data-pv="show"><small>01</small>Home</a></li>
+      <li><a href="#about" data-pv="shades"><small>02</small>About</a></li>
+      <li><a href="#programs" data-pv="white"><small>03</small>Programs</a></li>
+      <li><a href="#models" data-pv="red"><small>04</small>Models</a></li>
+      <li><a href="#portfolio" data-pv="field1"><small>05</small>Portfolio</a></li>
+      <li><a href="#admissions" data-pv="heritage"><small>06</small>Admissions</a></li>
+      <li><a href="#contact" data-pv="black"><small>07</small>Contact</a></li>
+    </ul>
+    <div class="mfoot"><span>Follow us</span><div class="soc" id="msoc"></div></div>
+  </div>
+  <div class="pv frame" id="pvbox"></div>
+</div></nav>
+
+<div id="peek"><img alt=""></div>
+
+<main>
+<!-- ============ HOME ============ -->
+<div class="page" id="home">
+  <section class="hero dk">
+    <div class="glow"></div>
+    <div class="arch frame"><img data-u="show" data-w="1200" data-par="60" alt="Runway show"></div>
+    <h1><span>Perfect</span><em>modeling school</em><span>Presence</span></h1>
+    <div class="wrap meta">
+      <p>Ethiopia's modern academy for runway, editorial and commercial modeling.</p>
+      <a href="#admissions" class="badge" data-cur="Apply" aria-label="Best modeling schools and management. Apply now">
+        <svg viewBox="0 0 120 120"><defs><path id="c" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"/></defs><text font-size="10" letter-spacing="1" fill="#f2eee6" font-family="Inter Tight" font-weight="700"><textPath href="#c" textLength="294" lengthAdjust="spacing">BEST MODELING SCHOOLS AND MANAGEMENT •</textPath></text></svg>
+        <b>↗</b>
+      </a>
+    </div>
+  </section>
+
+  <div class="marq dk"><div>
+    <span>Runway</span><span>Editorial</span><span>Commercial</span><span>Confidence</span><span>Photography</span><span>Runway</span><span>Editorial</span><span>Commercial</span><span>Confidence</span><span>Photography</span>
+  </div></div>
+
+  <section class="sec lt"><div class="wrap">
+    <div class="kick">Our belief</div><br>
+    <p class="scrub" data-t="We don't teach people to look perfect. We teach them to walk into any room, any camera and any stage and own it. <i class='serif'>Real presence</i> is the most beautiful thing a model can wear."></p>
+    <div class="stack">
+      <article class="sc dk" style="--i:0"><div class="tx"><span class="n">01 — Stage</span><div><h3>Runway<br>Mastery</h3><p style="margin-top:1rem">Walk, turn, pause and command the stage with timing that directors and designers remember.</p><div class="tags"><i>12 weeks</i><i>All levels</i></div></div><a href="#programs" class="pill" style="align-self:flex-start">Explore</a></div><div class="frame"><img data-u="white" data-w="1000" data-par="40" alt=""></div></article>
+      <article class="sc ac" style="--i:1"><div class="tx"><span class="n">02 — Camera</span><div><h3>Editorial<br>&amp; Photo</h3><p style="margin-top:1rem">Posing, expression and studio discipline, built into a portfolio agencies take seriously.</p><div class="tags"><i>8 weeks</i><i>Beginner+</i></div></div><a href="#programs" class="pill inv" style="align-self:flex-start">Explore</a></div><div class="frame"><img data-u="beige" data-w="1000" data-par="40" alt=""></div></article>
+      <article class="sc dk" style="--i:2;background:#1b1b1b"><div class="tx"><span class="n">03 — Brand</span><div><h3>Personal<br>Branding</h3><p style="margin-top:1rem">Social media, communication and styling, so you are booked for who you are, not only how you look.</p><div class="tags"><i>6 weeks</i><i>All levels</i></div></div><a href="#programs" class="pill" style="align-self:flex-start">Explore</a></div><div class="frame"><img data-u="shades" data-w="1000" data-par="40" alt=""></div></article>
+    </div>
+  </div></section>
+
+  <section class="sec dk"><div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:3rem">
+      <h2 class="h2 rv">Latest <span class="serif">work</span></h2>
+      <a href="#portfolio" class="pill">View portfolio ↗</a>
+    </div>
+    <div class="trio">
+      <a href="#portfolio" class="frame a rv" data-cur="Portfolio"><img data-u="red" data-w="800" data-par="50" alt=""></a>
+      <a href="#portfolio" class="frame b rv d1" data-cur="Portfolio"><img data-u="group" data-w="1000" data-par="70" alt=""></a>
+      <a href="#portfolio" class="frame c rv d2" data-cur="Portfolio"><img data-u="field1" data-w="800" data-par="40" alt=""></a>
+    </div>
+    <div class="stats rv" style="margin-top:5rem">
+      <div><strong data-count="1200">0</strong><span>Students trained</span></div>
+      <div><strong data-count="85">0</strong><span>Runway shows</span></div>
+      <div><strong data-count="40">0</strong><span>Brand partners</span></div>
+      <div><strong data-count="12">0</strong><span>Years of craft</span></div>
+    </div>
+  </div></section>
+
+  <section class="sec lt"><div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:3rem">
+      <h2 class="h2 rv">Faces of <span class="serif">the school</span></h2>
+      <a href="#models" class="pill inv">All models</a>
+    </div>
+    <div class="strip" id="homeStrip"></div>
+  </div></section>
+
+  <section class="cta ac"><div class="wrap"><div class="kick" style="justify-content:center">Next intake · January 2027</div><div class="big">Your stage<br>is <span class="serif">waiting</span></div><a href="#admissions" class="pill inv">Start your application ↗</a></div></section>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<div class="page" id="about">
+  <section class="phead dk"><div class="wrap"><div class="kick">About us</div><h1 class="big">Built on <span class="serif">discipline</span><br>&amp; elegance</h1><p>A professional, safe and inspiring path into the fashion industry.</p></div></section>
+  <section class="sec lt"><div class="wrap split">
+    <div class="frame rv"><img data-u="heritage" data-w="1000" data-par="50" alt=""></div>
+    <div class="rv d1"><div class="kick">Mission</div><h2 class="h2" style="margin-top:1.2rem">Shaping the next generation of <span class="serif">fashion faces</span></h2><p class="lead">Perfect Modeling School combines international runway standards with Ethiopian culture and heritage. Every student gets personal mentoring, professional shoots and real stage experience before graduating.</p><p class="lead">Our trainers are working models, choreographers, photographers and stylists who bring real industry experience into every class.</p></div>
+  </div></section>
+  <section class="sec dk"><div class="wrap"><div class="kick">Values</div><h2 class="h2 rv" style="margin-top:1.2rem">What we <span class="serif">stand for</span></h2>
+    <div class="vals rv"><div><b>I.</b><h3>Confidence</h3><p class="mut">Inner strength first. It shows on every stage and in every frame.</p></div><div><b>II.</b><h3>Professionalism</h3><p class="mut">Punctuality, respect and discipline define a lasting career.</p></div><div><b>III.</b><h3>Safety &amp; respect</h3><p class="mut">A protected, ethical environment for every student and parent.</p></div></div>
+  </div></section>
+  <section class="sec lt"><div class="wrap"><div class="kick">Faculty</div><h2 class="h2 rv" style="margin-top:1.2rem">Learn from <span class="serif">working pros</span></h2>
+    <div class="team">
+      <div class="rv"><div class="frame"><img data-u="outfit" data-w="700" alt=""></div><h4>Head Coach</h4><small>Runway &amp; choreography</small></div>
+      <div class="rv d1"><div class="frame"><img data-u="shades" data-w="700" alt=""></div><h4>Creative Director</h4><small>Styling &amp; direction</small></div>
+      <div class="rv d2"><div class="frame"><img data-u="studio1" data-w="700" alt=""></div><h4>Lead Photographer</h4><small>Editorial &amp; portfolio</small></div>
+      <div class="rv d3"><div class="frame"><img data-u="beige" data-w="700" alt=""></div><h4>Brand Mentor</h4><small>Social &amp; communication</small></div>
+    </div>
+  </div></section>
+  <section class="sec dk"><div class="wrap"><div class="kick">Journey</div><h2 class="h2 rv" style="margin-top:1.2rem">Milestones</h2>
+    <div class="tline">
+      <div class="rv"><b>Foundation</b><h4>The first class</h4><p class="mut">A small group of passionate students and one big idea.</p></div>
+      <div class="rv"><b>First show</b><h4>Our first grand runway</h4><p class="mut">Hundreds of guests and the first brand scouts in the audience.</p></div>
+      <div class="rv"><b>Partnerships</b><h4>Designers start casting us</h4><p class="mut">Fashion houses and brands begin booking our graduates.</p></div>
+      <div class="rv"><b>Going global</b><h4>International exposure</h4><p class="mut">Selected students join cross-border shows and shoots.</p></div>
+    </div>
+  </div></section>
+</div>
+
+<!-- ============ PROGRAMS ============ -->
+<div class="page" id="programs">
+  <section class="phead dk"><div class="wrap"><div class="kick">Training</div><h1 class="big">Choose your<br><span class="serif">craft</span></h1><p>Six programs for every goal and level. Open a program to see what is inside.</p></div></section>
+  <section class="sec dk" style="padding-top:2rem"><div class="wrap" id="plist"></div></section>
+  <section class="cta ac"><div class="wrap"><div class="big" style="font-size:clamp(2.4rem,9vw,8rem)">Not sure<br>where to <span class="serif">start?</span></div><a href="#contact" class="pill inv">Talk to an advisor ↗</a></div></section>
+</div>
+
+<!-- ============ MODELS ============ -->
+<div class="page" id="models">
+  <section class="phead dk"><div class="wrap"><div class="kick">Talent</div><h1 class="big">Our <span class="serif">models</span></h1><p>Faces and talents trained at Perfect Modeling School.</p></div></section>
+  <section class="sec dk" style="padding-top:0;padding-bottom:3rem"><div class="wrap">
+    <div class="filters" id="filters"><button class="on" data-f="all">All</button><button data-f="runway">Runway</button><button data-f="editorial">Editorial</button><button data-f="commercial">Commercial</button></div>
+    <div class="grid" id="grid" data-lb></div>
+  </div></section>
+  <section class="sec lt"><div class="wrap"><div class="more rv">
+    <div><div class="kick">Want to see more?</div><h2 class="h2">More <span class="serif">models</span><br>on request</h2><p class="lead">Looking for a specific look, age or style? Message us on WhatsApp and our team will send you more photos and portfolios.</p></div>
+    <a id="waMore" class="pill wa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></svg>Ask on WhatsApp</a>
+  </div></div></section>
+</div>
+
+<!-- ============ PORTFOLIO ============ -->
+<div class="page" id="portfolio">
+  <section class="phead dk"><div class="wrap"><div class="kick">Selected work</div><h1 class="big">Our <span class="serif">portfolio</span></h1>
+    <p>Runway stages, field shoots, backstage moments and campaigns, created by our students and team.</p>
+    <div class="stats pstats">
+      <div><strong data-count="85">0</strong><span>Stage shows</span></div>
+      <div><strong data-count="320">0</strong><span>Field &amp; studio shoots</span></div>
+      <div><strong data-count="40">0</strong><span>Brand campaigns</span></div>
+      <div><strong data-count="1200">0</strong><span>Models on stage</span></div>
+    </div>
+  </div></section>
+
+  <div class="marq dk"><div>
+    <span>Runway Shows</span><span>Field Shoots</span><span>Backstage</span><span>Editorials</span><span>Campaigns</span><span>Runway Shows</span><span>Field Shoots</span><span>Backstage</span><span>Editorials</span><span>Campaigns</span>
+  </div></div>
+
+  <section class="sec dk" style="padding-bottom:2rem"><div class="wrap">
+    <div class="kick">Featured projects</div>
+    <div id="projects"></div>
+  </div></section>
+
+  <section class="sec lt"><div class="wrap">
+    <div class="kick">The archive</div>
+    <h2 class="h2 rv" style="margin-top:1.2rem">Every <span class="serif">frame</span></h2>
+    <div class="filters" id="wfilters"><button class="on" data-f="all">All</button><button data-f="stage">Runway Stage</button><button data-f="field">Field Shoots</button><button data-f="backstage">Backstage</button><button data-f="studio">Studio</button></div>
+    <div class="grid" id="wgrid" data-lb></div>
+  </div></section>
+
+  <section class="sec dk"><div class="wrap">
+    <div class="kick">Voices</div>
+    <h2 class="h2 rv" style="margin-top:1.2rem">What partners <span class="serif">say</span></h2>
+    <div class="qs">
+      <div class="q rv"><p>"The students arrive on set prepared, confident and kind to everyone. That is rare."</p><small>Fashion designer · Sample</small></div>
+      <div class="q rv d1"><p>"Their runway shows feel like international events, with Ethiopian soul."</p><small>Event producer · Sample</small></div>
+      <div class="q rv d2"><p>"We booked three graduates for our campaign and would do it again tomorrow."</p><small>Brand manager · Sample</small></div>
+    </div>
+  </div></section>
+
+  <section class="cta ac"><div class="wrap"><div class="kick" style="justify-content:center">Be in the next gallery</div><div class="big">Make the<br><span class="serif">cover</span></div><a href="#admissions" class="pill inv">Apply now ↗</a></div></section>
+</div>
+
+<!-- ============ ADMISSIONS ============ -->
+<div class="page" id="admissions">
+  <section class="phead dk"><div class="wrap"><div class="kick">Join us</div><h1 class="big">Apply <span class="serif">today</span></h1><p>Begin your modeling career with a professional foundation.</p></div></section>
+  <section class="sec dk" style="padding-top:2rem"><div class="wrap fgrid">
+    <div class="rv"><div class="kick">How it works</div><h2 class="h2" style="margin-top:1.2rem">Four simple <span class="serif">steps</span></h2>
+      <ol class="steps2"><li>Submit the online application.</li><li>Attend a friendly interview and photo test.</li><li>Choose your program and confirm your place.</li><li>Start training and prepare for the stage.</li></ol>
+    </div>
+    <div class="rv d1">
+      <div class="prog" id="prog"><i class="on"></i><i></i><i></i></div>
+      <form id="apply" novalidate>
+        <div class="step on" data-s="0"><h3>About you</h3>
+          <div class="r2"><div class="fld"><label>Full name</label><input name="name" required autocomplete="name"></div><div class="fld"><label>Age</label><input name="age" type="number" min="8" max="60" required inputmode="numeric"></div></div>
+          <div class="r2"><div class="fld"><label>Phone</label><input name="phone" type="tel" required autocomplete="tel"></div><div class="fld"><label>Email</label><input name="email" type="email" required autocomplete="email"></div></div>
+          <div class="fbtn"><span></span><button type="button" class="pill fill" data-next>Continue →</button></div></div>
+        <div class="step" data-s="1"><h3>Your program</h3>
+          <div class="fld"><label>Program</label><select name="program" required><option value="">Select a program</option><option>Runway Mastery</option><option>Editorial &amp; Photo</option><option>Personal Branding</option><option>Kids &amp; Teens</option><option>Professional Intensive</option><option>Private Coaching</option></select></div>
+          <div class="fld"><label>Experience</label><div class="chips"><label><input type="radio" name="lvl" value="Beginner" checked><span>Beginner</span></label><label><input type="radio" name="lvl" value="Some experience"><span>Some experience</span></label><label><input type="radio" name="lvl" value="Professional"><span>Professional</span></label></div></div>
+          <div class="fld"><label>Tell us about yourself</label><textarea name="about" rows="3"></textarea></div>
+          <div class="fbtn"><button type="button" class="pill" data-prev>← Back</button><button type="button" class="pill fill" data-next>Continue →</button></div></div>
+        <div class="step" data-s="2"><h3>Review &amp; send</h3><div class="sum" id="sum"></div>
+          <div class="fbtn"><button type="button" class="pill" data-prev>← Back</button><button type="submit" class="pill fill">Submit application ↗</button></div></div>
+      </form>
+      <div class="ok" id="ok"><h3>Thank you<span class="serif" style="color:var(--accent)">.</span></h3><p class="mut" style="margin-top:1rem">Your application was received. Our team will contact you within 48 hours.</p></div>
+    </div>
+  </div></section>
+</div>
+
+<!-- ============ CONTACT ============ -->
+<div class="page" id="contact">
+  <section class="phead dk"><div class="wrap"><div class="kick">Get in touch</div><h1 class="big">Say <span class="serif">hello</span></h1><p>Questions, bookings or partnerships. We would love to hear from you.</p></div></section>
+  <section class="sec dk" style="padding-top:2rem"><div class="wrap fgrid">
+    <ul class="info rv"><li><b>Address</b><span>Addis Ababa, Ethiopia</span></li><li><b>Phone</b><span>+251 900 000 000</span></li><li><b>Email</b><span>info@perfectmodeling.school</span></li><li><b>Hours</b><span>Mon – Sat · 9:00 – 18:00</span></li></ul>
+    <div class="rv d1"><form id="cform" novalidate>
+      <div class="fld"><label>Your name</label><input name="n" required autocomplete="name"></div>
+      <div class="fld"><label>Email</label><input name="e" type="email" required autocomplete="email"></div>
+      <div class="fld"><label>Message</label><textarea name="m" rows="4" required style="resize:none"></textarea></div>
+      <button class="pill fill" type="submit">Send message ↗</button><p id="cmsg" style="margin-top:1rem;color:var(--accent)"></p></form></div>
+  </div>
+  <div class="wrap"><div class="map rv"><iframe loading="lazy" title="Map" src="https://www.openstreetmap.org/export/embed.html?bbox=38.70%2C8.96%2C38.82%2C9.06&layer=mapnik"></iframe></div></div></section>
+  <section class="sec lt"><div class="wrap"><div class="kick">FAQ</div><h2 class="h2" style="margin:1.2rem 0 2.5rem">Good <span class="serif">questions</span></h2>
+    <details class="fq"><summary>Do I need experience to join?</summary><p>No. Most programs start from zero. We assess your level at the interview and place you in the right group.</p></details>
+    <details class="fq"><summary>Is there an age limit?</summary><p>We train students from 8 to 60. Kids and Teens has its own safe, parent-friendly program.</p></details>
+    <details class="fq"><summary>Will I get professional photos?</summary><p>Yes. Every student builds a portfolio with studio and outdoor shoots led by our photographers.</p></details>
+    <details class="fq"><summary>Can I join part-time?</summary><p>Evening and weekend classes are available. Private coaching has a fully flexible schedule.</p></details>
+  </div></section>
+</div>
+</main>
+
+<footer class="dk"><div class="wrap">
+  <div class="fgr">
+    <div><a href="#home" class="logo" style="font-size:1.5rem">Perfect<i> modeling</i></a><p class="mut" style="margin-top:1rem;max-width:300px">Training confident faces and professional careers for the world stage.</p></div>
+    <div><h5>Explore</h5><ul><li><a href="#about">About</a></li><li><a href="#programs">Programs</a></li><li><a href="#models">Models</a></li></ul></div>
+    <div><h5>Studio</h5><ul><li><a href="#portfolio">Portfolio</a></li><li><a href="#admissions">Admissions</a></li><li><a href="#contact">Contact</a></li></ul></div>
+    <div><h5>Follow us</h5><div class="soc" id="soc"></div></div>
+  </div>
+  <div class="mega">Perfect</div>
+  <div class="cp"><span>© 2026 Perfect Modeling School</span><span>Addis Ababa, Ethiopia</span></div>
+</div></footer>
+
+<div id="lb"><button class="x" id="lbx" aria-label="Close">✕</button><button class="nv pv" id="lbp" aria-label="Previous">←</button><button class="nv nx" id="lbn" aria-label="Next">→</button>
+  <div class="box frame"><img id="lbimg" alt=""></div><div class="info"><small id="lbc" style="color:var(--accent);letter-spacing:.2em;text-transform:uppercase"></small><h3 id="lbn2" class="serif"></h3></div></div>
+
+<script>
+/* =====================================================
+   SETTINGS - replace these with the school's real links
+   ===================================================== */
+const WHATSAPP_NUMBER='251900000000';   // international format, no + or spaces
+const WHATSAPP_MESSAGE='Hello Perfect Modeling School, I would like to see more model photos.';
+const SOCIALS=[
+ {name:'Instagram',url:'https://instagram.com/perfectmodelingschool',
+  bg:'radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB 90%)',
+  icon:'<rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.4A4 4 0 1 1 12.6 8 4 4 0 0 1 16 11.4z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>'},
+ {name:'TikTok',url:'https://tiktok.com/@perfectmodelingschool',bg:'#000000',cls:'tt',
+  icon:'<path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>'},
+ {name:'Facebook',url:'https://facebook.com/perfectmodelingschool',bg:'#1877F2',
+  icon:'<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>'},
+ {name:'WhatsApp',url:'https://wa.me/'+WHATSAPP_NUMBER,bg:'#25D366',
+  icon:'<path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/>'}
+];
+const socHTML=SOCIALS.map(s=>`<a href="${s.url}" target="_blank" rel="noopener" class="${s.cls||''}" style="background:${s.bg}" aria-label="${s.name}" title="${s.name}"><svg viewBox="0 0 24 24">${s.icon}</svg></a>`).join('');
+document.getElementById('soc').innerHTML=socHTML;
+document.getElementById('msoc').innerHTML=socHTML;
+document.getElementById('waMore').href='https://wa.me/'+WHATSAPP_NUMBER+'?text='+encodeURIComponent(WHATSAPP_MESSAGE);
+
+/* ---------- Language switcher (button only, translation is added later) ---------- */
+let LANG='en';try{LANG=localStorage.getItem('pms-lang')||'en'}catch(e){}
+function applyLang(l){
+  LANG=l;document.documentElement.lang=l;
+  document.querySelectorAll('#lang button').forEach(b=>b.classList.toggle('on',b.dataset.l===l));
+  try{localStorage.setItem('pms-lang',l)}catch(e){}
+  /* TODO: translation hook. When the Amharic text is ready, swap the page text here. */
+}
+document.getElementById('lang').addEventListener('click',e=>{const b=e.target.closest('button');if(b)applyLang(b.dataset.l)});
+applyLang(LANG);
+
+/* ---------- Images (Unsplash, free for commercial use) ---------- */
+const BASE='https://images.unsplash.com/';
+const P={
+ show:'photo-1543728069-a3f97c5a2f32',group:'photo-1733322992706-1210ca79f4df',red:'photo-1733322991133-2de13aa12c57',white:'photo-1635279474047-ab3cda78bbe8',
+ dress:'photo-1571924848943-25c2c95bbb4b',maroon:'photo-1571924849183-a68a3879348d',beige:'photo-1616348490852-d80c545b4f79',shades:'photo-1613909671501-f9678ffc1d33',
+ outfit:'photo-1657815929003-b97cc426cb3d',black:'photo-1603122630570-7fd434d470d0',walk:'photo-1554882195-8cf792f9a571',crowd:'photo-1762430815537-e140755eedf9',
+ heritage:'photo-1605289355680-75fb41239154',flag1:'flagged/photo-1553277004-39d655b57262',flag2:'flagged/photo-1568988039441-11f295d74d89',
+ field1:'photo-1631618791905-3faca0a99b46',field2:'photo-1631618792372-fed106ee1b59',field3:'photo-1631323860856-bd997ef7e60c',field4:'photo-1631323859249-0fa81965de2a',
+ field5:'photo-1591780010554-b19e91beeace',field6:'photo-1662273196116-94930aec8364',field7:'photo-1662273201420-ab110a82789e',field8:'photo-1662273196721-8f3f91c461bc',
+ back1:'photo-1764593605450-15d6fc79a2fa',back2:'photo-1544057193-15f9633aaa98',back3:'photo-1760720350998-1bbc55885ccf',back4:'photo-1719613959577-434f93b266d7',
+ back5:'photo-1784833066652-e2809e77b0e4',back6:'photo-1764593284741-e99a939c356e',
+ studio1:'photo-1759532338598-679140538775',studio2:'photo-1762263350040-f3c6f8442ae5',studio3:'photo-1484319463707-0bc469eade5a',studio4:'photo-1784850227097-35a55694087a',
+ glam1:'photo-1784833170327-f315b8d08451',glam2:'photo-1784833170317-982391e74129'
+};
+const url=(k,w=900)=>`${BASE}${P[k]}?auto=format&fit=crop&q=80&w=${w}`;
+function hydrate(root=document){
+  root.querySelectorAll('img[data-u]:not([src])').forEach(i=>{
+    if(!i.closest('#pvbox')){i.classList.add('fd');i.onload=()=>i.classList.add('ld')}
+    if(!i.closest('.hero'))i.loading='lazy';
+    i.onerror=()=>{i.style.visibility='hidden'};
+    i.src=url(i.dataset.u,i.dataset.w||900);
+  });
+}
+
+/* ---------- Data ---------- */
+const MODELS=[
+ {n:'Selam T.',c:'runway',k:'red'},{n:'Liya M.',c:'editorial',k:'shades'},{n:'Hanna D.',c:'runway',k:'white'},
+ {n:'Meron G.',c:'commercial',k:'beige'},{n:'Bethel A.',c:'editorial',k:'studio2'},{n:'Rediet S.',c:'runway',k:'walk'},
+ {n:'Tigist W.',c:'commercial',k:'dress'},{n:'Eden K.',c:'editorial',k:'maroon'},{n:'Sara B.',c:'commercial',k:'outfit'},
+ {n:'Mahlet Y.',c:'runway',k:'group'},{n:'Betty H.',c:'editorial',k:'flag1'},{n:'Frehiwot L.',c:'runway',k:'flag2'}
+];
+const PROGS=[
+ ['Runway Mastery','12 weeks · All levels','white',['Walk & posture','Turns, pauses & stage presence','Heels & garment handling','Final graduation show']],
+ ['Editorial & Photo','8 weeks · Beginner+','beige',['Posing & expressions','Studio & outdoor shoots','Portfolio creation','Retouching basics']],
+ ['Personal Branding','6 weeks · All levels','shades',['Social media identity','Interview & communication','Grooming & styling','Industry ethics']],
+ ['Kids & Teens','10 weeks · Ages 8–16','heritage',['Confidence games','Safe, fun runway basics','Parent-approved portfolio','Showcase day']],
+ ['Professional Intensive','16 weeks · Advanced','black',['Agency casting prep','Commercial & brand work','Mentored real bookings','International standards']],
+ ['Private Coaching','Flexible schedule','red',['One-to-one training','Custom plan','Event preparation','Pageant preparation']]
+];
+const PROJECTS=[
+ {no:'01 / Stage',t:'Grand Winter <span class="serif">Show</span>',d:'Our biggest annual runway night: live music, guest designers and 40 students on one stage in front of a full house.',tags:['Runway','40 models','Live show'],
+  imgs:[['group','Finale walk','stage'],['red','Red look','stage'],['crowd','Full house','stage']]},
+ {no:'02 / Field',t:'Highlands Field <span class="serif">Series</span>',d:'A location shoot outside the studio. Natural light, open landscapes and real working conditions for our editorial students.',tags:['Editorial','On location','Natural light'],
+  imgs:[['field1','Open grass','field'],['field3','Rock study','field'],['field5','Golden hour','field']]},
+ {no:'03 / Backstage',t:'Behind the <span class="serif">Curtain</span>',d:'Hair, makeup, fittings and nerves. Students learn how a show is really built before the first model steps out.',tags:['Hair & makeup','Styling','Show day'],
+  imgs:[['back1','Final prep','backstage'],['back3','Makeup chair','backstage'],['back2','Vanity row','backstage']]},
+ {no:'04 / Studio',t:'Studio <span class="serif">Editorials</span>',d:'Controlled light, strong direction and fast feedback. The work that fills a student\'s first professional portfolio.',tags:['Portfolio','Flash','Direction'],
+  imgs:[['studio1','Flash portrait','studio'],['studio2','Black cap','studio'],['studio3','Floral study','studio']]}
+];
+const WORKS=[
+ ['show','Opening night','stage'],['field2','Tall grass','field'],['back5','Hair styling','backstage'],['studio4','Crop top editorial','studio'],
+ ['white','White collection','stage'],['field7','Autumn leaves','field'],['back6','Colour on set','backstage'],['shades','Sunglasses story','studio'],
+ ['walk','Catwalk turn','stage'],['field4','Floral dress','field'],['back4','Makeup artist','backstage'],['beige','Beige tube dress','studio'],
+ ['heritage','Heritage couture','stage'],['field6','Pink tree','field'],['glam1','Sparkle gown','backstage'],['maroon','Maroon slit dress','studio'],
+ ['black','Stage in black','stage'],['field8','Branch portrait','field'],['glam2','Dazzling duo','backstage'],['outfit','White outfit','studio'],
+ ['flag2','Runway walk','stage'],['dress','Sleeveless white','studio']
+];
+
+/* ---------- Build dynamic content ---------- */
+const gi=(k,n,c,w,ratio)=>`<div class="gi rv" data-k="${k}" data-n="${n}" data-c="${c}" data-cur="View"><div class="frame"${ratio?` style="aspect-ratio:${ratio}"`:''}><img data-u="${k}" data-w="${w}" alt="${n}"></div><div class="cap"><div><h4>${n}</h4><small>${c}</small></div><span>↗</span></div></div>`;
+const R=[3/4,4/5,3/4.4,1,4/5.2];
+document.getElementById('homeStrip').innerHTML=MODELS.slice(0,7).map(m=>`<div class="it"><div class="frame"><img data-u="${m.k}" data-w="700" alt="${m.n}"></div><h4>${m.n}</h4><small>${m.c}</small></div>`).join('');
+document.getElementById('plist').innerHTML=PROGS.map((p,i)=>`<details class="prow" data-pk="${p[2]}"><summary><span class="no">0${i+1}</span><h3>${p[0]}</h3><span class="du">${p[1]}</span><span class="pl">+</span></summary><div class="pbody"><div></div><p class="mut">A hands-on program led by working professionals, with real shoots and a live showcase.</p><ul>${p[3].map(x=>`<li>${x}</li>`).join('')}</ul></div></details>`).join('');
+document.getElementById('grid').innerHTML=MODELS.map((m,i)=>gi(m.k,m.n,m.c,800,R[i%R.length])).join('');
+document.getElementById('wgrid').innerHTML=WORKS.map((w,i)=>gi(w[0],w[1],w[2],800,R[i%R.length])).join('');
+document.getElementById('projects').innerHTML=PROJECTS.map(p=>`<article class="proj"><div class="pt rv"><span class="no">${p.no}</span><h2 class="h2">${p.t}</h2><p>${p.d}</p><div class="tags">${p.tags.map(t=>`<i>${t}</i>`).join('')}</div></div><div class="pg" data-lb>${p.imgs.map(m=>gi(m[0],m[1],m[2],1000)).join('')}</div></article>`).join('');
+document.querySelectorAll('.scrub').forEach(el=>{el.innerHTML=el.dataset.t.replace(/(<[^>]+>)|(\S+)/g,(m,tag,w)=>tag?tag:`<span>${w}</span> `)});
+const menuLinks=[...document.querySelectorAll('#menu li a')];
+const pvbox=document.getElementById('pvbox');
+pvbox.innerHTML=menuLinks.map((a,i)=>`<img data-u="${a.dataset.pv}" data-w="800" class="${i?'':'on'}" alt="">`).join('');
+hydrate();
+
+/* ---------- Loader ---------- */
+let n=0;const cnt=document.getElementById('cnt');
+const li=setInterval(()=>{n+=Math.ceil(Math.random()*6);if(n>=100){n=100;clearInterval(li);setTimeout(()=>document.getElementById('loader').classList.add('done'),300)}cnt.textContent=n},38);
+
+/* ---------- Cursor ---------- */
+const cur=document.getElementById('cur');
+addEventListener('mousemove',e=>{cur.style.transform=`translate(${e.clientX}px,${e.clientY}px)`});
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-cur]');if(t){cur.classList.add('big');cur.textContent=t.dataset.cur}else{cur.classList.remove('big');cur.textContent=''}});
+
+/* ---------- Menu ---------- */
+const menu=document.getElementById('menu'),mtxt=document.getElementById('mtxt');
+function setPv(i){pvbox.querySelectorAll('img').forEach((im,j)=>im.classList.toggle('on',i===j))}
+function curIndex(){return Math.max(0,menuLinks.findIndex(a=>a.classList.contains('cur')))}
+function toggleMenu(f){const o=f===undefined?!menu.classList.contains('open'):f;menu.classList.toggle('open',o);mtxt.textContent=o?'Close':'Menu';document.body.style.overflow=o?'hidden':'';if(o)setPv(curIndex())}
+document.getElementById('mbtn').onclick=()=>toggleMenu();
+menuLinks.forEach((a,i)=>a.addEventListener('mouseenter',()=>setPv(i)));
+menuLinks.forEach(a=>a.addEventListener('mouseleave',()=>setPv(curIndex())));
+
+/* ---------- Router + wipe + current page marker ---------- */
+const pages=[...document.querySelectorAll('.page')],wipe=document.getElementById('wipe');
+function render(){
+  const id=(location.hash||'#home').slice(1);const t=document.getElementById(id)?id:'home';
+  pages.forEach(p=>p.classList.toggle('active',p.id===t));
+  menuLinks.forEach(a=>{const on=a.getAttribute('href')==='#'+t;a.classList.toggle('cur',on);if(on){a.setAttribute('aria-current','page');document.getElementById('here').textContent=a.childNodes[1].textContent.trim()}else a.removeAttribute('aria-current')});
+  scrollTo(0,0);document.title=(t==='home'?'':t[0].toUpperCase()+t.slice(1)+' | ')+'Perfect Modeling School';
+}
+function go(h){
+  if((location.hash||'#home')===h){toggleMenu(false);scrollTo({top:0,behavior:'smooth'});return}
+  wipe.style.transition='transform .7s cubic-bezier(.8,0,.2,1)';wipe.style.transform='translateY(0)';
+  setTimeout(()=>{toggleMenu(false);location.hash=h;
+    setTimeout(()=>{wipe.style.transform='translateY(-100%)';
+      setTimeout(()=>{wipe.style.transition='none';wipe.style.transform='translateY(100%)'},750)},120)},720);
+}
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(a){e.preventDefault();go(a.getAttribute('href'))}});
+addEventListener('hashchange',render);render();
+
+/* ---------- Scroll effects ---------- */
+const par=[...document.querySelectorAll('[data-par]')],scr=[...document.querySelectorAll('.scrub')],sp=document.getElementById('sp');
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+(function loop(){
+  const vh=innerHeight;
+  par.forEach(el=>{if(!el.offsetParent)return;const r=el.parentElement.getBoundingClientRect();if(r.bottom<-50||r.top>vh+50)return;
+    const p=(r.top+r.height/2-vh/2)/vh;el.style.transform=`translate3d(0,${p*-(+el.dataset.par)}px,0)`});
+  scr.forEach(el=>{if(!el.offsetParent)return;const r=el.getBoundingClientRect(),w=el.querySelectorAll('span'),
+    pr=clamp((vh*.85-r.top)/(r.height+vh*.25),0,1),k=Math.round(pr*w.length);w.forEach((s,i)=>s.classList.toggle('on',i<k))});
+  const max=document.documentElement.scrollHeight-vh;sp.style.transform=`scaleX(${max>0?clamp(scrollY/max,0,1):0})`;
+  requestAnimationFrame(loop);
+})();
+
+/* ---------- Reveal + counters ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+const io2=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const el=e.target,end=+el.dataset.count;let v=0;const st=Math.max(1,Math.ceil(end/60));
+  const t=setInterval(()=>{v+=st;if(v>=end){v=end;clearInterval(t)}el.textContent=v.toLocaleString()+(end>=40?'+':'')},24);io2.unobserve(el)}}),{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>io2.observe(el));
+
+/* ---------- Programs hover preview (desktop) ---------- */
+const peek=document.getElementById('peek'),pimg=peek.querySelector('img');let px=0,py=0,tx=0,ty=0;
+addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+(function mv(){px+=(tx-px)*.14;py+=(ty-py)*.14;peek.style.transform=`translate(${px}px,${py}px)`;requestAnimationFrame(mv)})();
+document.getElementById('plist').addEventListener('mouseover',e=>{const d=e.target.closest('.prow');
+  if(d&&matchMedia('(hover:hover)').matches){pimg.src=url(d.dataset.pk,500);peek.classList.add('on')}else peek.classList.remove('on')});
+document.getElementById('plist').addEventListener('mouseleave',()=>peek.classList.remove('on'));
+
+/* ---------- Filters ---------- */
+function filterBar(barId,gridId){
+  document.getElementById(barId).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    document.querySelectorAll('#'+barId+' button').forEach(x=>x.classList.toggle('on',x===b));
+    document.querySelectorAll('#'+gridId+' .gi').forEach(g=>g.classList.toggle('hide',b.dataset.f!=='all'&&g.dataset.c!==b.dataset.f))});
+}
+filterBar('filters','grid');filterBar('wfilters','wgrid');
+
+/* ---------- Lightbox (all galleries, with swipe on phones) ---------- */
+const lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg');let LB={list:[],i:0};
+function paint(){const el=LB.list[LB.i];lbimg.src=url(el.dataset.k,1200);document.getElementById('lbn2').textContent=el.dataset.n;document.getElementById('lbc').textContent=el.dataset.c}
+function step(d){LB.i=(LB.i+d+LB.list.length)%LB.list.length;paint()}
+document.addEventListener('click',e=>{const g=e.target.closest('.gi');if(!g)return;const sc=g.closest('[data-lb]');if(!sc)return;
+  LB.list=[...sc.querySelectorAll('.gi:not(.hide)')];LB.i=LB.list.indexOf(g);paint();lb.classList.add('open')});
+document.getElementById('lbx').onclick=()=>lb.classList.remove('open');
+document.getElementById('lbp').onclick=()=>step(-1);document.getElementById('lbn').onclick=()=>step(1);
+lb.addEventListener('click',e=>{if(e.target===lb)lb.classList.remove('open')});
+let sx=0;
+lb.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
+lb.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)step(dx<0?1:-1)});
+addEventListener('keydown',e=>{if(e.key==='Escape'){lb.classList.remove('open');toggleMenu(false)}
+  if(lb.classList.contains('open')){if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1)}});
+
+/* ---------- Multi-step application ---------- */
+const form=document.getElementById('apply'),steps=[...form.querySelectorAll('.step')],bars=[...document.querySelectorAll('#prog i')];let cs=0;
+function show(i){cs=i;steps.forEach((s,j)=>s.classList.toggle('on',j===i));bars.forEach((b,j)=>b.classList.toggle('on',j<=i));
+  if(i===2){const f=new FormData(form);document.getElementById('sum').innerHTML=[['Name',f.get('name')],['Age',f.get('age')],['Phone',f.get('phone')],['Email',f.get('email')],['Program',f.get('program')],['Experience',f.get('lvl')]].map(r=>`<div><span class="mut">${r[0]}</span><b>${r[1]||'-'}</b></div>`).join('')}}
+function valid(s){let ok=true;s.querySelectorAll('[required]').forEach(i=>{const bad=!i.value.trim()||(i.type==='email'&&!/^\S+@\S+\.\S+$/.test(i.value));i.closest('.fld').classList.toggle('err',bad);if(bad)ok=false});return ok}
+form.addEventListener('click',e=>{if(e.target.closest('[data-next]')&&valid(steps[cs]))show(cs+1);if(e.target.closest('[data-prev]'))show(cs-1)});
+form.addEventListener('submit',e=>{e.preventDefault();form.style.display='none';document.getElementById('prog').style.display='none';document.getElementById('ok').style.display='block'});
+
+/* ---------- Contact form (front-end demo) ---------- */
+document.getElementById('cform').addEventListener('submit',e=>{e.preventDefault();const f=e.target,m=document.getElementById('cmsg');
+  if(!valid(f)){m.textContent='Please complete all fields correctly.';return}m.textContent='Message sent. We will reply within 24 hours.';f.reset()});
+</script>
+</body>
+</html>
